@@ -1,0 +1,21 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "Compile Plugin",
+            "type": "process",
+            "command": "${workspaceRoot}/amxxpc",
+            "args": [
+                "${file}",
+                "-i${workspaceRoot}/scripting/include",
+                "-d3"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "amxxpawn.compiler.includePaths": [
+        "${workspaceRoot}/include"
+    ],
+    "amxxpawn.compiler.executablePath": "${workspaceRoot}/amxxpc",
+    "amxxpawn.language.webApiLinks": false,
+    "search.useIgnoreFiles": false
+}
