@@ -6,7 +6,7 @@
 public plugin_init() {
 	register_plugin("Client Analyzer", "dev", "WessTorn");
 
-	RegisterHookChain(RG_PwwM_Move, "rgPM_Move", false);
+	RegisterHookChain(RG_PM_Move, "rgPM_Move", false);
 }
 
 public rgPM_Move(id) {

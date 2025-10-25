@@ -11,6 +11,9 @@ new iOldButton[MAX_PLAYERS + 1];
 
 new iGroundFrames[MAX_PLAYERS + 1];
 
+new Float:flPreSpeed[MAX_PLAYERS + 1];
+new Float:flPostSpeed[MAX_PLAYERS + 1];
+
 enum BHOP_TYPE {
 	BH_REGULAR,
 	BH_STANDUP,
@@ -28,9 +31,10 @@ public player_move(id) {
 	new bool:isGround = bool:(get_entvar(id, var_flags) & FL_ONGROUND);
 
 	new iButton = get_entvar(id, var_button);
+	iPrevButton[id] = get_entvar(id, var_oldbuttons);
 
 	new bool:inDuck = bool:(get_entvar(id, var_flags) & FL_DUCKING);
-	
+
 	if (isGround) {
 		iGroundFrames[id]++;
 
@@ -42,11 +46,19 @@ public player_move(id) {
 				eBhopType[id] = BH_REGULAR;
 				eGstrafeType[id] = GS_REGULAR;
 			}
+
+			flPreSpeed[id] = get_vector_hor_length(id);
 		}
+
+		flPostSpeed[id] = get_vector_hor_length(id);
 	} else {
 		if (isPrevGround[id] && iGroundFrames[id] <= 10){
 			if (inDuck) {
 				eBhopType[id] = BH_DUCK;
+			}
+
+			if (iGroundFrames[id] == 1) {
+				flPostSpeed[id] = get_vector_hor_length(id);
 			}
 
 			new bool:isDuck = !inDuck && !(iPrevButton[id] & IN_JUMP) && iOldButton[id] & IN_DUCK;
@@ -60,16 +72,16 @@ public player_move(id) {
 			if (isJump) {
 				debug_move_bhop(id, eBhopType[id], iGroundFrames[id]);
 			}
-
 		}
 
 		iGroundFrames[id] = 0;
+		flPreSpeed[id] = 0.0;
+		flPostSpeed[id] = 0.0;
 	}
 
 
 	isPrevGround[id] = isGround;
 
-	iPrevButton[id] = iButton;
 	iOldButton[id] = iPrevButton[id];
 }
 
@@ -82,8 +94,11 @@ public clear_move(id) {
 	iGroundFrames[id] = 0;
 }
 
-stock Float:vector_hor_length(Float:flVel[3]) {
-	new Float:flNorma = floatpower(flVel[0], 2.0) + floatpower(flVel[1], 2.0);
+stock Float:get_vector_hor_length(id) {
+	new Float:flVelocity[3]
+	get_entvar(id, var_velocity, flVelocity);
+
+	new Float:flNorma = floatpower(flVelocity[0], 2.0) + floatpower(flVelocity[1], 2.0);
 	if (flNorma > 0.0)
 		return floatsqroot(flNorma);
 		
@@ -97,7 +112,7 @@ stock debug_move_duck(id, GS_TYPE:type, iFog) {
 		case GS_STANDUP: 	formatex(szType, charsmax(szType), "STANDUP");
 	}
 
-	client_print_color(id, print_team_blue, "DUCK: T-^3%s^1 FOG-^3%d^1", szType, iFog);
+	client_print_color(id, print_team_blue, "DUCK: T-^3%s^1 FOG-^3%d^1 PRE-^3%0.2f^1 POST-^3%0.2f^1", szType, iFog, flPreSpeed[id], flPostSpeed[id]);
 }
 
 stock debug_move_bhop(id, BHOP_TYPE:type, iFog) {
@@ -108,5 +123,5 @@ stock debug_move_bhop(id, BHOP_TYPE:type, iFog) {
 		case BH_DUCK: 	formatex(szType, charsmax(szType), "DUCK");
 	}
 
-	client_print_color(id, print_team_blue, "BHOP: T-^3%s^1 FOG-^3%d^1", szType, iFog);
+	client_print_color(id, print_team_blue, "BHOP: T-^3%s^1 FOG-^3%d^1 PRE-^3%0.2f^1 POST-^3%0.2f^1", szType, iFog, flPreSpeed[id], flPostSpeed[id]);
 }
