@@ -1,12 +1,7 @@
 #include <amxmodx>
+#include <fakemeta>
 #include <reapi>
 
-#include <hns_anticheat/player_move>
+#include <hns_anticheat/global>
 
-// #include <client_analyzer/global.inl>
-// #include <client_analyzer/punish.inl>
-
-// #include <client_analyzer/bhop_stats.inl>
-// #include <client_analyzer/gstrafe_stats.inl>
-
-// #include <client_analyzer/menu.inl>
+#include <hns_anticheat/ac_bhop>
