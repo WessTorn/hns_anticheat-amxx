@@ -37,7 +37,7 @@ enum _:BHOP_DATA {
 	bool:BH_PATTERNS[30]
 };
 
-new g_sBhopStats[MAX_PLAYERS + 1][12][BHOP_DATA];
+new g_sBhopStats[MAX_PLAYERS + 1][NMAX + 1][BHOP_DATA];
 new g_iBhopCount[MAX_PLAYERS + 1];
 
 enum GSSTRAFE_TYPE {
@@ -55,7 +55,7 @@ enum _:GS_DATA {
 	bool:GS_PATTERNS[30]
 };
 
-new g_sGstrafeStats[MAX_PLAYERS + 1][NMAX][GS_DATA];
+new g_sGstrafeStats[MAX_PLAYERS + 1][NMAX + 1][GS_DATA];
 new g_iGstrafeCount[MAX_PLAYERS + 1];
 
 enum ACTIONS {

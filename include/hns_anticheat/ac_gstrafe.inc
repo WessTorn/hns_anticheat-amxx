@@ -21,22 +21,22 @@ public hns_gstrafe_patterns(id, slot) {
 		g_sGstrafeStats[id][slot][GS_PATTERNS][i] = g_bPendingPattern[id][i];
 	}
 
-	debug_patterns_gstrafe(id, slot)
+	debug_patterns_gstrafe(id, slot);
 	
-	if (g_iGstrafeCount[id] >= 10) {
+	if (g_iGstrafeCount[id] >= NMAX) {
 		//TODO: Если NMAX то отправляем статистику
 		reset_stats_gstrafe(id);
 	}
 }
 
 stock reset_stats_gstrafe(id) {
-	for (new i = 0; i < NMAX; i++) {
+	for (new i = 0; i <= NMAX; i++) {
    		arrayset(g_sGstrafeStats[id][i], 0, GS_DATA);
 	}
 	g_iGstrafeCount[id] = 0;
 }
 
-stock debug_move_duck(id, GS_TYPE:type, iFog) {
+stock debug_move_duck(id, GSSTRAFE_TYPE:type, iFog) {
 	new szType[16];
 	switch (type) {
 		case GS_REGULAR: 	formatex(szType, charsmax(szType), "REGULAR");
@@ -50,7 +50,7 @@ public debug_patterns_gstrafe(id, slot) {
 	new szShowMess[64];
 	new iLen;
 	new iCmds = 0;
-	new fog = g_sGstrafeStats[id][slot][GS_PATTERNS];
+	new fog = g_sGstrafeStats[id][slot][GS_FOG];
 
 	for (new i = 0; i < PATTERN_TOTAL; i++) {
 		if (i == PATTERN_PRE - fog) {

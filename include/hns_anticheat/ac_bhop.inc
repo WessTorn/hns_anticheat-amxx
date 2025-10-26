@@ -24,14 +24,13 @@ public hns_bhop_patterns(id, slot) {
 
 	debug_patterns_bhop(id, slot);
 
-	if (g_iBhopCount[id] >= 10) {
-		//TODO: Если NMAX то отправляем статистику
+	if (g_iBhopCount[id] >= NMAX) {
 		reset_stats_bhop(id);
 	}
 }
 
 stock reset_stats_bhop(id) {
-	for (new i = 0; i < NMAX; i++) {
+	for (new i = 0; i <= NMAX; i++) {
    		arrayset(g_sBhopStats[id][i], 0, BHOP_DATA);
 	}
 	g_iBhopCount[id] = 0;
