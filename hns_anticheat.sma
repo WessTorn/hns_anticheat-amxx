@@ -9,8 +9,15 @@
 #include <hns_anticheat/ac_bhop>
 #include <hns_anticheat/ac_gstrafe>
 
+new bool:g_bFastScrollArmed[MAX_PLAYERS + 1];
+new g_iFastScrollDetections[MAX_PLAYERS + 1];
+
+new g_pCvarFastScrollDebug;
+
 public plugin_init() {
 	register_plugin("Client Analyzer", "dev", "WessTorn");
+
+	g_pCvarFastScrollDebug = register_cvar("ac_fastscroll_debug", "0");
 
 	RegisterHookChain(RG_PM_Move, "rgPM_Move", false);
 	register_forward(FM_CmdStart, "fmCmdStart_Post", true);
@@ -66,6 +73,8 @@ public rgPM_Move(id) {
 				hns_bhop_move(id, eBhopType[id], iGroundFrames[id], flPreSpeed[id], flPostSpeed[id]);
 
 				begin_pattern_capture(id, ACT_BHOP, g_iBhopCount[id]);
+
+				g_bFastScrollArmed[id] = true;
 			}
 		}
 
@@ -96,14 +105,35 @@ public fmCmdStart_Post(id, uc_handle, seed) {
 		return FMRES_IGNORED;
 
 	new buttons = get_ucmd(uc_handle, ucmd_buttons);
+	new prevButtons = iPrevCmdButtons[id];
 	new bool:isScrollFrame = false;
+	new bool:isFastScrollFrame = false;
 
-	if ((buttons & IN_JUMP) && !(iPrevCmdButtons[id] & IN_JUMP)) {
+	if ((buttons & IN_JUMP) && !(prevButtons & IN_JUMP)) {
+		isScrollFrame = true;
+		g_bFastScrollArmed[id] = true;
+	}
+
+	if ((buttons & IN_DUCK) && !(prevButtons & IN_DUCK)) {
 		isScrollFrame = true;
 	}
 
-	if ((buttons & IN_DUCK) && !(iPrevCmdButtons[id] & IN_DUCK)) {
+	if (g_bFastScrollArmed[id] && (buttons & IN_JUMP) && (prevButtons & IN_JUMP)) {
+		isFastScrollFrame = true;
+		g_iFastScrollDetections[id]++;
+		g_bFastScrollArmed[id] = false;
+
+		if (get_pcvar_num(g_pCvarFastScrollDebug)) {
+			client_print(0, print_team_default, "[AC] Fast scroll detected on ^3%n^1 (total: ^3%d^1)", id, g_iFastScrollDetections[id]);
+		}
+	}
+
+	if (isFastScrollFrame) {
 		isScrollFrame = true;
+	}
+
+	if (!(buttons & IN_JUMP)) {
+		g_bFastScrollArmed[id] = false;
 	}
 
 	iPrevCmdButtons[id] = buttons;
@@ -212,6 +242,9 @@ public clear_move(id) {
 	for (new i = 0; i < CMD_HISTORY; i++) {
 		g_bCmdHistory[id][i] = false;
 	}
+
+	g_bFastScrollArmed[id] = false;
+	g_iFastScrollDetections[id] = 0;
 
 	reset_pattern_buffers(id);
 	reset_stats_bhop(id);

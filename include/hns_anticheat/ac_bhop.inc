@@ -69,5 +69,5 @@ public debug_patterns_bhop(id, slot) {
 		iLen += format(szShowMess[iLen], sizeof szShowMess - iLen, "%d", g_sBhopStats[id][slot][BH_PATTERNS][i]);
 	}
 
-	client_print_color(id, print_team_blue, "%s (%d)", szShowMess, iCmds);
+	client_print(id, print_console, "%s (%d)", szShowMess, iCmds);
 }
