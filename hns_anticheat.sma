@@ -1,7 +1,12 @@
 #define VERSION "1.0.4"
 
-#include <hns_anticheat/index.inc>
+#include <amxmodx>
+#include <fakemeta>
+#include <reapi>
 
+#include <hns_anticheat/global>
+
+#include <hns_anticheat/ac_bhop>
 
 public plugin_init() {
 	register_plugin("Client Analyzer", "dev", "WessTorn");
