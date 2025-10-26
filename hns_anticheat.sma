@@ -7,6 +7,7 @@
 #include <hns_anticheat/global>
 
 #include <hns_anticheat/ac_bhop>
+#include <hns_anticheat/ac_gstrafe>
 
 public plugin_init() {
 	register_plugin("Client Analyzer", "dev", "WessTorn");
@@ -56,7 +57,9 @@ public rgPM_Move(id) {
 			new bool:isJump = !isDuck && iPrevButton[id] & IN_JUMP && !(iOldButton[id] & IN_JUMP);
 
 			if (isDuck) {
-				// СГС или ДДРАН
+				hns_gstrafe_move(id, eGstrafeType[id], iGroundFrames[id], flPreSpeed[id], flPostSpeed[id]);
+
+				begin_pattern_capture(id, ACT_GSTRAFE, g_iGstrafeCount[id]);
 			}
 
 			if (isJump) {
@@ -183,7 +186,7 @@ stock finalize_pattern_capture(id, bool:bForce = false) {
 		}
 
 		case ACT_GSTRAFE: {
-			// TODO: handle GS stats
+			hns_gstrafe_patterns(id, g_iPatternOwnerSlot[id]);
 		}
 	}
 
@@ -223,15 +226,4 @@ stock reset_pattern_buffers(id) {
 	for (new i = 0; i < PATTERN_TOTAL; i++) {
 		g_bPendingPattern[id][i] = false;
 	}
-}
-
-
-stock debug_move_duck(id, GS_TYPE:type, iFog) {
-	new szType[16];
-	switch (type) {
-		case GS_REGULAR: 	formatex(szType, charsmax(szType), "REGULAR");
-		case GS_STANDUP: 	formatex(szType, charsmax(szType), "STANDUP");
-	}
-
-	client_print_color(id, print_team_blue, "DUCK: T-^3%s^1 FOG-^3%d^1 PRE-^3%0.2f^1 POST-^3%0.2f^1", szType, iFog, flPreSpeed[id], flPostSpeed[id]);
 }

@@ -55,7 +55,7 @@ enum _:GS_DATA {
 	bool:GS_PATTERNS[30]
 };
 
-new g_sGstrafeStats[MAX_PLAYERS + 1][12][GS_DATA];
+new g_sGstrafeStats[MAX_PLAYERS + 1][NMAX][GS_DATA];
 new g_iGstrafeCount[MAX_PLAYERS + 1];
 
 enum ACTIONS {
